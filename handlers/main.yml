@@ -1,2 +1,4 @@
 ---
 # handlers file for boss-ansible-role-kernel-tuning
+- name: reload sysctl
+  shell: sysctl -p

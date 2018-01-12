@@ -1,0 +1,6 @@
+---
+# TODO: test this out again
+
+- name: set sysctl parameters for performance
+  copy: src=99-performance.conf dest={{ boss__kernel_tuning_sysctl_dynamic_file }} owner=root group=root mode=0644
+  notify: reload sysctl
