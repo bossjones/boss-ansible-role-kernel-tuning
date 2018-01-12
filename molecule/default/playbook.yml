@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: boss-ansible-role-kernel-tuning
+      bossjones__user: vagrant
+      bossjones__group: vagrant
+
