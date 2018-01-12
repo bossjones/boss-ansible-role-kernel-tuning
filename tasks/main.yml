@@ -1,2 +1,22 @@
 ---
 # tasks file for boss-ansible-role-kernel-tuning
+
+# FIXME: Enable this later
+# NOTE: https://www.serverwatch.com/server-tutorials/set-user-limits-with-pamlimits-and-limits.conf.html
+# - name: Activate PAM limits module for su.
+#   lineinfile:
+#     dest: /etc/pam.d/su
+#     state: present
+#     regexp: "^#?.*session    required   pam_limits.so"
+#     line: "session    required   pam_limits.so"
+#   tags: installation
+
+- name: Apply sysctl options
+  sysctl:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+      state: present
+  with_items: '{{boss__kernel_tuning_sysctl_settings_list}}'
+
+# # Set proper sysctl values
+# - include: performance_sysctl.yml

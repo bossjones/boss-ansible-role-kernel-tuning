@@ -1,2 +1,50 @@
 ---
 # defaults file for boss-ansible-role-kernel-tuning
+
+# INFO: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_network_access
+# INFO: https://www.cyberciti.biz/faq/linux-kernel-etcsysctl-conf-security-hardening/
+
+# FIXME: This is more kernel hardening than it is performance.
+boss__kernel_tuning_sysctl_settings_list:
+  ########## IPv4 networking start ##############
+  # NOTE: Send redirects, if router, but this is just server
+  # NOTE: This command disables acceptance of all IPv4 ICMP redirected packets on all interfaces.
+  - { name: "net.ipv4.conf.all.send_redirects", value: "0"}
+  - { name: "net.ipv4.conf.default.send_redirects", value: "0"}
+
+  # Accept packets with SRR option? No
+  - { name: "net.ipv4.conf.all.accept_source_route", value: "0"}
+
+  # Do not accept source routing
+  - { name: "net.ipv4.conf.default.accept_source_route", value: "0"}
+  # Accept Redirects? No, this is not router
+  - { name: "net.ipv4.conf.all.accept_redirects", value: "0"}
+  - { name: "net.ipv4.conf.default.accept_redirects", value: "0"}
+
+  # Log packets with impossible addresses to kernel log? yes
+  - { name: "net.ipv4.conf.all.log_martians", value: "1"}
+  - { name: "net.ipv4.conf.default.log_martians", value: "0"}
+
+  # Ignore all ICMP ECHO and TIMESTAMP requests sent to it via broadcast/multicast
+  - { name: "net.ipv4.icmp_echo_ignore_broadcasts", value: "1"}
+
+  # Ignoring bogus ICMP error responses reduces log size, although some activity would not be logged.
+  - { name: "net.ipv4.icmp_ignore_bogus_error_responses", value: "1"}
+
+  # FIXME: Was this disabled?
+  # Prevent against the common 'syn flood attack'
+  # - { name: "net.ipv4.tcp_syncookies", value: "1"}
+
+  # FIXME: If we disable ipv6 what happens here?
+  # INFO: http://hashdump.org/wiki/linux/hardening/ipv6.html
+  # IPv6 Router Advertisements
+  # If this is allowed an attacker may be able to trick a machine into routing traffic to a place they did not intend.
+  - { name: "net.ipv6.conf.all.accept_ra", value: "0"}
+  - { name: "net.ipv6.conf.default.accept_ra", value: "0"}
+
+  # IPv6 Redirect ICMP Acceptance
+  # ICMP redirects could be used to trick victims into routing unwanted or malicious ICMP traffic.
+  - { name: "net.ipv6.conf.all.accept_redirects", value: "0"}
+  - { name: "net.ipv6.conf.default.accept_redirects", value: "0"}
+
+boss__kernel_tuning_sysctl_dynamic_file: /etc/sysctl.d/99-performance.conf
